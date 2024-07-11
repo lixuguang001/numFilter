@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数字筛选软件</title>
+
+     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <script src="/js/vue2.js"></script>
+    <script src="/js/html2canvas.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="container top ">
+            <div>
+                    
+            </div>
+            <div class="tzc_title">
+                数字筛选
+            </div>
+            <div style="cursor: pointer;float: right;" @click="reload"><svg
+                class="bi bi-arrow-clockwise" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                    d="M3.17 6.706a5 5 0 0 1 7.103-3.16.5.5 0 1 0 .454-.892A6 6 0 1 0 13.455 5.5a.5.5 0 0 0-.91.417 5 5 0 1 1-9.375.789z" />
+                <path fill-rule="evenodd"
+                    d="M8.147.146a.5.5 0 0 1 .707 0l2.5 2.5a.5.5 0 0 1 0 .708l-2.5 2.5a.5.5 0 1 1-.707-.708L10.293 3 8.147.854a.5.5 0 0 1 0-.708z" />
+            </svg></div>
+        </div>
+        
+
+
+        <div v-if="zxArr.length>0">
+
+            <div class=" container tzc_header">
+                <div class="input-group">
+                    <input type="number" class="form-control form-control1" maxlength="3" v-model="keyword"
+                       oninput = "value=value.replace(/[^\d]/g,'')" />
+                    <button type="button" class="btn btn-primary" style="margin-left:5px;" @click="zux6">组选6</button>
+                    <button type="button" class="btn btn-success" style="margin-left:5px;" @click="zux3">组选3</button>
+
+                </div>
+
+                <div class="input-group funcbtn" style="margin-top: 20px"
+                    v-if="zxArr[zxArr.length-1].value.length<1000">
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <button type="button" class="btn btn-info" @click="startZX">直选</button>
+                        <button type="button" class="btn btn-info" @click="funSearch(1)">跨度</button>
+                        <button type="button" class="btn btn-info" @click="funSearch(2)">和值</button>
+                        <button type="button" class="btn btn-info" @click="funSearch(3)">和尾</button>
+                        <button type="button" class="btn btn-info" @click="funSearch(4)">排除</button>
+                        <button type="button" class="btn btn-success" @click="saveImg">导出结果</button>
+
+                    </div>
+                </div>
+
+                <div class="container tzc_header2" style="margin-top: 20px;" v-if="iszx">
+                    <div class="directly_elected">
+                        <div class="directly_elected_left">
+                            <div class="row">
+                                <div class="col-2" style="text-align: center;">
+                                    <div class="tzc_bw">百位：</div>
+                                </div>
+                                <div class="col-10 col-lg-8">
+                                    <div class="digital_select Hundred">
+                                        <div class="tzc_select tzc_select_H" v-for="sel in zxData"
+                                            :class="{tzc_active:selectDataB.includes(sel)}" :key="sel"
+                                            @click="selectB(sel)">{{sel}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 5px;">
+                                <div class="col-2" style="text-align: center;">
+                                    <div class="tzc_bw">十位：</div>
+                                </div>
+                                <div class="col-10 col-lg-8">
+                                    <div class="digital_select Ten_unit">
+                                        <div class="tzc_select tzc_select_T" v-for="sel in zxData"
+                                            :class="{tzc_active:selectDataS.includes(sel)}" :key="sel"
+                                            @click="selectS(sel)">{{sel}}</div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 5px;">
+                                <div class="col-2" style="text-align: center;">
+                                    <div class="tzc_bw">个位：</div>
+                                </div>
+                                <div class="col-8">
+                                    <div class="digital_select The_unit">
+                                        <div class="tzc_select tzc_select_G" v-for="sel in zxData"
+                                            :class="{tzc_active:selectDataG.includes(sel)}" :key="sel"
+                                            @click="selectG(sel)">{{sel}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="directly_elected_right">
+                            <button type="button" class="btn btn-success tzc_buuton3" @click="zx">直选</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div id="capture" class="container" style="height: 78vh; overflow: auto;margin-top: 10px;">
+                <div style="display: flex;justify-content: space-between;   position: sticky; top: 0;
+                background: #f5f5f5;
+                z-index: 9;">
+                    <div class="tzc_count" style="justify-content: left;cursor: pointer;"
+                        v-if="zxArr.length>0&&zxArr[0].key.length>0" @click="prevData">
+                        <svg class="bi bi-arrow-90deg-left" width="1.5em" height="1.5em" viewBox="0 0 16 16"
+                            fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M6.104 2.396a.5.5 0 0 1 0 .708L3.457 5.75l2.647 2.646a.5.5 0 1 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0z" />
+                            <path fill-rule="evenodd"
+                                d="M2.75 5.75a.5.5 0 0 1 .5-.5h6.5a2.5 2.5 0 0 1 2.5 2.5v5.5a.5.5 0 0 1-1 0v-5.5a1.5 1.5 0 0 0-1.5-1.5h-6.5a.5.5 0 0 1-.5-.5z" />
+                        </svg>上一步
+                    </div>
+                    <div v-else></div>
+                    <div class="tzc_count">
+                        <div>
+
+                            <span class="badge badge-danger mr-2" v-for="item in zxArr">
+                                <span v-if="item.key">{{item.type}}:<span style="color:#fff;">{{item.key}}</span></span>
+                            </span>
+                        </div>
+                        <span>数量：</span>
+                        <span class="tzc_digit">{{zxArr[zxArr.length-1].value.length}}</span>
+                        <span>个</span>
+                    </div>
+                </div>
+
+                <div class="row two_row tzc_border">
+                    <div class="col-auto" v-for="value in zxArr[zxArr.length-1].value"
+                        :key="value">
+                        <div class="tzc_box">{{value}}</div>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+</body>
+
+</html>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            originArr: [],
+            zxArr: [],
+            keyword: '',
+            iszx: false,
+            zxData: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],//只选3位数字数据
+            selectDataB: [],
+            selectDataS: [],
+            selectDataG: [],
+
+        },
+        mounted() {
+            this.genOriginArr();
+        },
+        methods: {
+            reload() {
+                location.reload()
+            },
+            //生成原始数组
+            genOriginArr() {
+                for (var i = 0; i < 1000; i++) {
+                    let strNum = i.toString().padStart(3, '0');
+                    this.originArr.push(strNum);
+                }
+                this.zxArr.push({ key: '', value: this.originArr, type: '' });
+                console.log(this.zxArr)
+            },
+            //上一步
+            prevData() {
+                if (this.zxArr.length > 1 && this.zxArr[0].key.length > 0) {
+                    this.zxArr.splice(this.zxArr.length - 1)
+                }
+                else {
+                    this.reload()
+                }
+            },
+            startZX() {
+                this.iszx = !this.iszx;
+            },
+            //组选6
+            zux6() {
+                let keyword = this.keyword.trim()
+                if (this.keyword.length <= 1) {
+                    alert('请输入2位或3位数字！')
+                    return false;
+                }
+                let len = this.zxArr.length
+                let isfirst = this.zxArr[0].key.length == 0
+                let preItemArr = isfirst ? this.originArr : this.zxArr[len - 1].value
+                let tempArr = []
+                //分析筛选
+                if (keyword.length == 3) {
+                    tempArr = preItemArr.map(item => {
+                        if (item.indexOf(keyword[0]) > -1 || item.indexOf(keyword[1]) > -1 || item.indexOf(keyword[2]) > -1) {
+                            return item;
+                        }
+                    }).filter(item => item !== undefined);
+
+                }
+                //组选筛选
+                if (keyword.length == 2) {
+                    tempArr = preItemArr.map(item => {
+                        if (item.indexOf(keyword) > -1) {
+                            return item;
+                        }
+                    }).filter(item => item !== undefined);
+                }
+                let itemJson = {};
+                if (isfirst) {
+                    itemJson = this.zxArr[0]
+                }
+                itemJson.key = this.keyword;
+                itemJson.type = '组选6'
+                itemJson.value = tempArr;
+                if (!isfirst) {
+                    this.zxArr.push(itemJson)
+                }
+                this.keyword = ""
+                //this.zxArr.splice(index + 1)
+                //this.$set(this.zxArr, this.zxArr.length - 1, { key: keyword, value: tempArr } ) 
+                console.log(this.zxArr)
+            },
+            //选中百位数
+            selectB(num) {
+                if (this.selectDataB.includes(num)) {
+                    this.selectDataB.splice(this.selectDataB.indexOf(num), 1)
+                }
+                else {
+                    this.selectDataB.push(num)
+                }
+            },
+            //选中百十位数
+            selectS(num) {
+                if (this.selectDataS.includes(num)) {
+                    this.selectDataS.splice(this.selectDataS.indexOf(num), 1)
+                }
+                else {
+                    this.selectDataS.push(num)
+                }
+            },
+            //选中个位数
+            selectG(num) {
+                if (this.selectDataG.includes(num)) {
+                    this.selectDataG.splice(this.selectDataG.indexOf(num), 1)
+                }
+                else {
+                    this.selectDataG.push(num)
+                }
+            },
+            //直选
+            zx() {
+                let itemJson = {}
+                let preItemArr = this.zxArr[this.zxArr.length - 1].value
+                let tempArr = []
+                //直选
+                tempArr = preItemArr.map(item => {
+                    if (this.selectDataB.includes(item[0]) && this.selectDataS.includes(item[1]) && this.selectDataG.includes(item[2])) {
+                        return item;
+                    }
+                }).filter(item => item !== undefined);
+
+
+                itemJson.key = `百：(${this.selectDataB.join(',')})( 十：${this.selectDataS.join(',')})( 个：${this.selectDataG.join(',')})`;
+                itemJson.type = '直选'
+                itemJson.value = tempArr;
+                this.zxArr.push(itemJson)
+            },
+
+            //组选3
+            zux3() {
+
+                let keyword = this.keyword.trim()
+                if (keyword.length != 3) {
+                    alert('请输入3位数字！')
+                    return false;
+                }
+
+                let len = this.zxArr.length
+                let isfirst = this.zxArr[0].key.length == 0
+                let preItemArr = isfirst ? this.originArr : this.zxArr[len - 1].value
+                let tempArr = []
+                //分析筛选
+                tempArr = preItemArr.map(item => {
+                    if ((item[0] == item[1] && keyword.indexOf(item[0]) > -1) || (item[0] == item[2] && keyword.indexOf(item[0]) > -1) ||
+                        (item[1] == item[2] && keyword.indexOf(item[1]) > -1)) {
+                        return item;
+                    }
+                }).filter(item => item !== undefined);
+
+                let itemJson = {};
+                if (isfirst) {
+                    itemJson = this.zxArr[0]
+                }
+                itemJson.key = this.keyword;
+                itemJson.type = '组选3'
+                itemJson.value = tempArr;
+                if (!isfirst) {
+                    this.zxArr.push(itemJson)
+                }
+                this.keyword = ""
+
+            },
+
+            //最后查询
+            funSearch(type) {
+                let keyword = this.keyword.trim();
+                if (keyword.length <= 0) {
+                    alert('请输入值')
+                    return false;
+                }
+                let itemJson = {};
+                itemJson.key = this.keyword;
+                let tempArr = [];
+                let len = this.zxArr.length
+                let preItemArr = this.zxArr[len - 1].value
+                if (type == 1)//跨度
+                {
+                    itemJson.type = '跨度'
+                    tempArr = preItemArr.map(item => {
+                        let numbers = item.split('')
+                        let min = Math.min(...numbers);
+                        let max = Math.max(...numbers);
+                        if (max - min == parseInt(keyword)) {
+                            return item
+                        }
+
+                    }).filter(item => item !== undefined);
+
+                }
+
+                if (type == 2)//和值
+                {
+                    itemJson.type = '和值'
+                    tempArr = preItemArr.map(item => {
+                        let numbers = item.split('')
+                        let sum = numbers.reduce((a, b) =>
+                            parseInt(a) + parseInt(b), 0
+                        )
+                        if (sum == parseInt(keyword)) {
+                            return item
+                        }
+
+                    }).filter(item => item !== undefined);
+
+                }
+
+                if (type == 3)//和值尾数
+                {
+                    itemJson.type = '和尾'
+                    tempArr = preItemArr.map(item => {
+                        let numbers = item.split('')
+                        let sum = '' + numbers.reduce((a, b) =>
+                            parseInt(a) + parseInt(b), 0
+                        )
+                        if (sum[sum.length - 1] == keyword) {
+                            return item
+                        }
+
+                    }).filter(item => item !== undefined);
+
+                }
+
+                if (type == 4)//和值尾数
+                {
+                    itemJson.type = '排除'
+                    tempArr = preItemArr.map(item => {
+
+                        if (item.indexOf(keyword) < 0) {
+                            return item
+                        }
+
+                    }).filter(item => item !== undefined);
+
+                }
+
+                itemJson.value = tempArr;
+                this.zxArr.push(itemJson)
+                this.keyword = ''
+            },
+            //保存图片
+            saveImg() {
+                html2canvas(document.querySelector("#capture")).then(canvas => {
+                    // blob
+                    canvas.toBlob(blob => {
+                        const href = window.URL.createObjectURL(new Blob([blob]))
+                        const link = document.createElement('a')
+                        link.href = href
+                        const times = Math.floor(new Date().getTime() / 1000);
+                        link.download = times + '.png'
+                        document.body.appendChild(link)
+                        link.click()
+                        document.body.removeChild(link)
+                    }, 'image/png')
+                });
+            }
+        }
+    })
+
+
+</script>
