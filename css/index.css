@@ -40,12 +40,7 @@ body{
 .input-group-addon{
     cursor: pointer;
 }
-.tzc_lable{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 33px;
-}
+
 .tzc_count{
 
     height: 40px;
