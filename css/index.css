@@ -24,7 +24,9 @@ body{
     padding: 15px;
     /* border: 1px solid #ccc;; */
 }
-
+.btn-info{
+    margin-right: 2px;
+}
 .tzc_box{
     cursor: pointer;
     border-radius: 5px;

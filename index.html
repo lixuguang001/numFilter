@@ -34,31 +34,35 @@
 
             <div class=" container tzc_header">
                 <div class="input-group">
-                    <div class="col-12 col-md-9">
+                    <div class="col-12 col-sm-8">
                         <div class="digital_select The_unit">
                             <div class="tzc_select tzc_select_G" v-for="sel in zxData"
                                 :class="{tzc_active:selectDataKey.includes(sel)}" :key="sel" @click="selectKey(sel)">
                                 {{sel}}</div>
                         </div>
                     </div>
-
-                    <button type="button" class="btn btn-primary" style="margin-left:   5px;" @click="zux6">组选6</button>
-                    <button type="button" class="btn btn-success" style="margin-left:5px;" @click="zux3">组选3</button>
+<div  class="col-12 col-sm-4 mt-2 mt-sm-0 justify-content-end" style="display: flex;">
+    <button type="button" class="btn btn-sm btn-primary" style="margin-left: 3px;" @click="zux6">组选6</button>
+    <button type="button" class="btn btn-sm btn-success" style="margin-left:3px;" @click="zux3">组选3</button>
+</div>
+                   
 
                 </div>
 
                 <div class="input-group funcbtn" style="margin-top: 20px"
                     v-if="zxArr[zxArr.length-1].value.length<1000">
-                    <input type="text" class="form-control form-control1" v-model="keyword" placeholder="输入多个值时空格隔开" />
-
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                        <button type="button" class="btn btn-info" @click="startZX">直选</button>
-                        <button type="button" class="btn btn-info" @click="funSearch(1)">跨度</button>
-                        <button type="button" class="btn btn-info" @click="funSearch(2)">和值</button>
-                        <button type="button" class="btn btn-info" @click="funSearch(3)">和尾</button>
-                        <button type="button" class="btn btn-info" @click="funSearch(4)">排除</button>
-                        <button type="button" class="btn btn-info" @click="funSearch(5)">组合</button>
-                        <button type="button" class="btn btn-success" @click="saveImg">导出结果</button>
+                    <div class="col-11 col-lg-4">
+                        <input type="text" class="form-control form-control1" v-model="keyword" placeholder="输入多个值时空格隔开" />
+                    </div>
+                
+                    <div class="  btn-group col-11 col-lg-8 mt-2 mt-lg-0" role="group" aria-label="Basic example">
+                        <button type="button" class="btn btn-sm btn-info" @click="startZX">直选</button>
+                        <button type="button" class="btn btn-sm btn-info" @click="funSearch(1)">跨度</button>
+                        <button type="button" class="btn btn-sm btn-info" @click="funSearch(2)">和值</button>
+                        <button type="button" class="btn btn-sm btn-info" @click="funSearch(3)">和尾</button>
+                        <button type="button" class="btn btn-sm btn-info" @click="funSearch(4)">排除</button>
+                        <button type="button" class="btn btn-sm btn-info" @click="funSearch(5)">组合</button>
+                        <button type="button" class="btn btn-sm btn-success" @click="saveImg">导出结果</button>
 
                     </div>
                 </div>
