@@ -436,18 +436,27 @@
                 {
 
                     itemJson.type = '组合'
-    
-                    if (keyArr.length!=2) {
-                        alert('组合需输入2个数，每个数之间空格隔开')
+                    let isbreak = false
+                    for (let i = 0; i < keyArr.length; i++) {
+                        if (keyArr[i].length != 2) {
+                            isbreak = true;
+                            break;
+                        }
+                    }
+                    if (isbreak) {
+                        alert('组合每个值必须两位数，多个值之间空格隔开')
                         return false;
                     }
 
                     tempArr = preItemArr.map(item => {
-                        if (item.includes(keyArr[0]) && item.includes(keyArr[1])) {
-                            return item;
+                        for (let i = 0; i < keyArr.length; i++) {
+                            if (item.includes(keyArr[i][0]) &&item.includes(keyArr[i][1])) {
+                                return item;
+                                break;
+                            }
                         }
+                       
                     }).filter(item => item !== undefined);
-
                 }
 
                 itemJson.value = tempArr;
