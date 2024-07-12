@@ -436,21 +436,14 @@
                 {
 
                     itemJson.type = '组合'
-                    let isbreak = false
-                    for (let i = 0; i < keyArr.length; i++) {
-                        if (keyArr[i].length != 2) {
-                            isbreak = true;
-                            break;
-
-                        }
-                    }
-                    if (isbreak) {
-                        alert('组合只能输入两位数的值')
+    
+                    if (keyArr.length!=2) {
+                        alert('组合需输入2个数，每个数之间空格隔开')
                         return false;
                     }
 
                     tempArr = preItemArr.map(item => {
-                        if (keyArr.includes(item.substr(0, 2)) || keyArr.includes(item.substr(1, 2))) {
+                        if (item.includes(keyArr[0]) && item.includes(keyArr[1])) {
                             return item;
                         }
                     }).filter(item => item !== undefined);
