@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>数字筛选软件</title>
-
-     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/index.css">
     <script src="/js/vue2.js"></script>
     <script src="/js/html2canvas.min.js"></script>
@@ -16,42 +16,48 @@
     <div id="app">
         <div class="container top ">
             <div>
-                    
+
             </div>
             <div class="tzc_title">
                 数字筛选
             </div>
-            <div style="cursor: pointer;float: right;" @click="reload"><svg
-                class="bi bi-arrow-clockwise" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd"
-                    d="M3.17 6.706a5 5 0 0 1 7.103-3.16.5.5 0 1 0 .454-.892A6 6 0 1 0 13.455 5.5a.5.5 0 0 0-.91.417 5 5 0 1 1-9.375.789z" />
-                <path fill-rule="evenodd"
-                    d="M8.147.146a.5.5 0 0 1 .707 0l2.5 2.5a.5.5 0 0 1 0 .708l-2.5 2.5a.5.5 0 1 1-.707-.708L10.293 3 8.147.854a.5.5 0 0 1 0-.708z" />
-            </svg></div>
+            <div style="cursor: pointer;float: right;" @click="reload"><svg class="bi bi-arrow-clockwise" width="2em"
+                    height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                        d="M3.17 6.706a5 5 0 0 1 7.103-3.16.5.5 0 1 0 .454-.892A6 6 0 1 0 13.455 5.5a.5.5 0 0 0-.91.417 5 5 0 1 1-9.375.789z" />
+                    <path fill-rule="evenodd"
+                        d="M8.147.146a.5.5 0 0 1 .707 0l2.5 2.5a.5.5 0 0 1 0 .708l-2.5 2.5a.5.5 0 1 1-.707-.708L10.293 3 8.147.854a.5.5 0 0 1 0-.708z" />
+                </svg></div>
         </div>
-        
-
 
         <div v-if="zxArr.length>0">
 
             <div class=" container tzc_header">
                 <div class="input-group">
-                    <input type="number" class="form-control form-control1" maxlength="3" v-model="keyword"
-                       oninput = "value=value.replace(/[^\d]/g,'')" />
-                    <button type="button" class="btn btn-primary" style="margin-left:5px;" @click="zux6">组选6</button>
+                    <div class="col-12 col-md-9">
+                        <div class="digital_select The_unit">
+                            <div class="tzc_select tzc_select_G" v-for="sel in zxData"
+                                :class="{tzc_active:selectDataKey.includes(sel)}" :key="sel" @click="selectKey(sel)">
+                                {{sel}}</div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-primary" style="margin-left:   5px;" @click="zux6">组选6</button>
                     <button type="button" class="btn btn-success" style="margin-left:5px;" @click="zux3">组选3</button>
 
                 </div>
 
                 <div class="input-group funcbtn" style="margin-top: 20px"
                     v-if="zxArr[zxArr.length-1].value.length<1000">
+                    <input type="text" class="form-control form-control1" v-model="keyword" placeholder="输入多个值时空格隔开" />
+
                     <div class="btn-group" role="group" aria-label="Basic example">
                         <button type="button" class="btn btn-info" @click="startZX">直选</button>
                         <button type="button" class="btn btn-info" @click="funSearch(1)">跨度</button>
                         <button type="button" class="btn btn-info" @click="funSearch(2)">和值</button>
                         <button type="button" class="btn btn-info" @click="funSearch(3)">和尾</button>
                         <button type="button" class="btn btn-info" @click="funSearch(4)">排除</button>
+                        <button type="button" class="btn btn-info" @click="funSearch(5)">组合</button>
                         <button type="button" class="btn btn-success" @click="saveImg">导出结果</button>
 
                     </div>
@@ -89,7 +95,7 @@
                                 <div class="col-2" style="text-align: center;">
                                     <div class="tzc_bw">个位：</div>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-10 col-lg-8">
                                     <div class="digital_select The_unit">
                                         <div class="tzc_select tzc_select_G" v-for="sel in zxData"
                                             :class="{tzc_active:selectDataG.includes(sel)}" :key="sel"
@@ -99,7 +105,8 @@
                             </div>
                         </div>
                         <div class="directly_elected_right">
-                            <button type="button" class="btn btn-success tzc_buuton3" @click="zx">直选</button>
+                            <button type="button" class="btn btn-light" @click="iszx=false">取消</button>
+                            <button type="button" class="btn btn-success tzc_buuton3" @click="zx">筛选</button>
                         </div>
                     </div>
 
@@ -107,7 +114,7 @@
 
             </div>
 
-            <div id="capture" class="container" style="height: 78vh; overflow: auto;margin-top: 10px;">
+            <div id="capture" class="container" style="max-height: 78vh; overflow: auto;margin-top: 10px;">
                 <div style="display: flex;justify-content: space-between;   position: sticky; top: 0;
                 background: #f5f5f5;
                 z-index: 9;">
@@ -125,8 +132,9 @@
                     <div class="tzc_count">
                         <div>
 
-                            <span class="badge badge-danger mr-2" v-for="item in zxArr">
-                                <span v-if="item.key">{{item.type}}:<span style="color:#fff;">{{item.key}}</span></span>
+                            <span class="badge badge-warning mr-2" v-for="item in zxArr">
+                                <span v-if="item.key" style="letter-spacing: 1px;">{{item.type}}:<span
+                                        style="color:#b92a0a;">{{item.key}}</span></span>
                             </span>
                         </div>
                         <span>数量：</span>
@@ -136,19 +144,13 @@
                 </div>
 
                 <div class="row two_row tzc_border">
-                    <div class="col-auto" v-for="value in zxArr[zxArr.length-1].value"
-                        :key="value">
+                    <div class="col-auto" v-for="value in zxArr[zxArr.length-1].value" :key="value">
                         <div class="tzc_box">{{value}}</div>
                     </div>
 
                 </div>
             </div>
-
-
         </div>
-
-
-
     </div>
 </body>
 
@@ -165,6 +167,7 @@
             selectDataB: [],
             selectDataS: [],
             selectDataG: [],
+            selectDataKey: []
 
         },
         mounted() {
@@ -183,6 +186,15 @@
                 this.zxArr.push({ key: '', value: this.originArr, type: '' });
                 console.log(this.zxArr)
             },
+            //选中个位数
+            selectKey(num) {
+                if (this.selectDataKey.includes(num)) {
+                    this.selectDataKey.splice(this.selectDataKey.indexOf(num), 1)
+                }
+                else {
+                    this.selectDataKey.push(num)
+                }
+            },
             //上一步
             prevData() {
                 if (this.zxArr.length > 1 && this.zxArr[0].key.length > 0) {
@@ -197,43 +209,49 @@
             },
             //组选6
             zux6() {
-                let keyword = this.keyword.trim()
-                if (this.keyword.length <= 1) {
-                    alert('请输入2位或3位数字！')
-                    return false;
-                }
+                let keyword = this.selectDataKey.join()
+
                 let len = this.zxArr.length
                 let isfirst = this.zxArr[0].key.length == 0
                 let preItemArr = isfirst ? this.originArr : this.zxArr[len - 1].value
                 let tempArr = []
-                //分析筛选
-                if (keyword.length == 3) {
-                    tempArr = preItemArr.map(item => {
-                        if (item.indexOf(keyword[0]) > -1 || item.indexOf(keyword[1]) > -1 || item.indexOf(keyword[2]) > -1) {
-                            return item;
-                        }
-                    }).filter(item => item !== undefined);
+                //每个值数字按升序排列,获取不重复的数组
+                let noSortArr = preItemArr.map(item => {
+                    let itemArr = item.split('')
+                    itemArr.sort((a, b) => {
+                        return a - b
+                    })
+                    return itemArr
+                })
+                // 将子数组转换为字符串并存储在一个新的Set中
+                let uniqueSet = new Set(noSortArr.map(subArr => JSON.stringify(subArr)));
+                // 将Set中的字符串再转换回子数组
+                let uniqueArr = Array.from(uniqueSet).map(str => JSON.parse(str).join(''));
+                //获取数组内每位都不重复的数组
+                uniqueArr = uniqueArr.map(item => {
+                    if (!(item[0] == item[1] || item[0] == item[2] || item[1] == item[2])) {
+                        return item;
+                    }
+                }).filter(item => item !== undefined);
 
-                }
-                //组选筛选
-                if (keyword.length == 2) {
-                    tempArr = preItemArr.map(item => {
-                        if (item.indexOf(keyword) > -1) {
-                            return item;
-                        }
-                    }).filter(item => item !== undefined);
-                }
+
+                tempArr = uniqueArr.map(item => {
+                    if (keyword.indexOf(item[0]) > -1 || keyword.indexOf(item[1]) > -1 || keyword.indexOf(item[2]) > -1) {
+                        return item;
+                    }
+                }).filter(item => item !== undefined);
+
                 let itemJson = {};
                 if (isfirst) {
                     itemJson = this.zxArr[0]
                 }
-                itemJson.key = this.keyword;
+                itemJson.key = keyword;
                 itemJson.type = '组选6'
                 itemJson.value = tempArr;
                 if (!isfirst) {
                     this.zxArr.push(itemJson)
                 }
-                this.keyword = ""
+                this.selectDataKey = []
                 //this.zxArr.splice(index + 1)
                 //this.$set(this.zxArr, this.zxArr.length - 1, { key: keyword, value: tempArr } ) 
                 console.log(this.zxArr)
@@ -270,6 +288,7 @@
                 let itemJson = {}
                 let preItemArr = this.zxArr[this.zxArr.length - 1].value
                 let tempArr = []
+
                 //直选
                 tempArr = preItemArr.map(item => {
                     if (this.selectDataB.includes(item[0]) && this.selectDataS.includes(item[1]) && this.selectDataG.includes(item[2])) {
@@ -287,47 +306,68 @@
             //组选3
             zux3() {
 
-                let keyword = this.keyword.trim()
-                if (keyword.length != 3) {
-                    alert('请输入3位数字！')
-                    return false;
-                }
+                let keyword = this.selectDataKey.join()
 
                 let len = this.zxArr.length
                 let isfirst = this.zxArr[0].key.length == 0
                 let preItemArr = isfirst ? this.originArr : this.zxArr[len - 1].value
                 let tempArr = []
-                //分析筛选
-                tempArr = preItemArr.map(item => {
-                    if ((item[0] == item[1] && keyword.indexOf(item[0]) > -1) || (item[0] == item[2] && keyword.indexOf(item[0]) > -1) ||
-                        (item[1] == item[2] && keyword.indexOf(item[1]) > -1)) {
+
+                //每个值数字按升序排列,获取不重复的数组
+                let noSortArr = preItemArr.map(item => {
+                    let itemArr = item.split('')
+                    itemArr.sort((a, b) => {
+                        return a - b
+                    })
+                    return itemArr
+                })
+                // 将子数组转换为字符串并存储在一个新的Set中
+                let uniqueSet = new Set(noSortArr.map(subArr => JSON.stringify(subArr)));
+                // 将Set中的字符串再转换回子数组
+                let uniqueArr = Array.from(uniqueSet).map(str => JSON.parse(str).join(''));
+                //获取数组内每位都不重复的数组
+
+                //所有重复或豹子号
+                uniqueArr = uniqueArr.map(item => {
+                    if (item[0] == item[1] || item[0] == item[2] || item[1] == item[2]) {
                         return item;
                     }
                 }).filter(item => item !== undefined);
+
+                //获取带关键数字的号
+                tempArr = uniqueArr.map(item => {
+                    if (keyword.indexOf(item[0]) > -1 || keyword.indexOf(item[1]) > -1 || keyword.indexOf(item[2]) > -1) {
+                        return item;
+                    }
+                }).filter(item => item !== undefined);
+
 
                 let itemJson = {};
                 if (isfirst) {
                     itemJson = this.zxArr[0]
                 }
-                itemJson.key = this.keyword;
+                itemJson.key = keyword;
                 itemJson.type = '组选3'
                 itemJson.value = tempArr;
                 if (!isfirst) {
                     this.zxArr.push(itemJson)
                 }
-                this.keyword = ""
-
+                this.selectDataKey = []
             },
 
-            //最后查询
+            //方法查询
             funSearch(type) {
                 let keyword = this.keyword.trim();
                 if (keyword.length <= 0) {
                     alert('请输入值')
                     return false;
                 }
+                let keyArr = this.keyword.split(' ')
+                let keyArrInt = keyArr.map(item => {
+                    return parseInt(item)
+                })
                 let itemJson = {};
-                itemJson.key = this.keyword;
+                itemJson.key = keyword;
                 let tempArr = [];
                 let len = this.zxArr.length
                 let preItemArr = this.zxArr[len - 1].value
@@ -338,7 +378,7 @@
                         let numbers = item.split('')
                         let min = Math.min(...numbers);
                         let max = Math.max(...numbers);
-                        if (max - min == parseInt(keyword)) {
+                        if (keyArrInt.includes(max - min)) {
                             return item
                         }
 
@@ -354,7 +394,7 @@
                         let sum = numbers.reduce((a, b) =>
                             parseInt(a) + parseInt(b), 0
                         )
-                        if (sum == parseInt(keyword)) {
+                        if (keyArrInt.includes(sum)) {
                             return item
                         }
 
@@ -370,23 +410,45 @@
                         let sum = '' + numbers.reduce((a, b) =>
                             parseInt(a) + parseInt(b), 0
                         )
-                        if (sum[sum.length - 1] == keyword) {
+                        if (keyArr.includes(sum[sum.length - 1])) {
                             return item
                         }
-
                     }).filter(item => item !== undefined);
 
                 }
 
-                if (type == 4)//和值尾数
+                if (type == 4)//排除
                 {
                     itemJson.type = '排除'
                     tempArr = preItemArr.map(item => {
-
-                        if (item.indexOf(keyword) < 0) {
-                            return item
+                        if (!(keyArr.includes(item[0]) || keyArr.includes(item[1]) || keyArr.includes(item[2]))) {
+                            return item;
                         }
+                    }).filter(item => item !== undefined);
 
+                }
+
+                if (type == 5)//组合
+                {
+
+                    itemJson.type = '组合'
+                    let isbreak = false
+                    for (let i = 0; i < keyArr.length; i++) {
+                        if (keyArr[i].length != 2) {
+                            isbreak = true;
+                            break;
+
+                        }
+                    }
+                    if (isbreak) {
+                        alert('组合只能输入两位数的值')
+                        return false;
+                    }
+
+                    tempArr = preItemArr.map(item => {
+                        if (keyArr.includes(item.substr(0, 2)) || keyArr.includes(item.substr(1, 2))) {
+                            return item;
+                        }
                     }).filter(item => item !== undefined);
 
                 }

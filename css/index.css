@@ -24,10 +24,7 @@ body{
     padding: 15px;
     /* border: 1px solid #ccc;; */
 }
-.btn-group .btn-info{
-    margin-right: 10px;
-    border-radius: 5px !important;
-}
+
 .tzc_box{
     cursor: pointer;
     border-radius: 5px;
@@ -39,10 +36,7 @@ body{
    padding: 3px 10px;
     border: 1px solid #b92a0a;
 }
-.tzc_box:hover{
-    background-color: #b92a0a;
-    color: #fff;
-}
+
 .input-group-addon{
     cursor: pointer;
 }
