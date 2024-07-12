@@ -21,25 +21,26 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
-jobs:  
-  build-and-deploy:  
-    runs-on: ubuntu-latest  
-    steps:  
-      - name: Checkout  
-        uses: actions/checkout@v2  
-
-      # 安装依赖（如果你的静态网站构建需要依赖）  
-      # - name: Install dependencies  
-      #   run: npm install  
-
-      # 构建静态网站（这一步取决于你的项目设置）  
-      # - name: Build  
-      #   run: npm run build  
-
-      # 假设你的静态文件已经在dist目录中  
-      - name: Deploy  
-        uses: JamesIves/github-pages-deploy-action@v4.3.0  
-        with:  
-          branch: gh-pages  # 部署的分支  
-          folder: /      # 静态文件所在的目录  
-          clean: true       # 在部署前清理目标分支
+jobs:
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository
+          path: |
+            css/
+            img/
+            js/
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
