@@ -52,7 +52,7 @@
                 <div class="input-group funcbtn" style="margin-top: 20px"
                     v-if="zxArr[zxArr.length-1].value.length<1000">
                     <div class="col-11 col-lg-4">
-                        <input type="text" class="form-control form-control1" v-model="keyword" placeholder="输入多个值时空格隔开" />
+                        <input type="tel" class="form-control form-control1" v-model="keyword" placeholder="输入多个值时空格隔开" />
                     </div>
                 
                     <div class="  btn-group col-11 col-lg-8 mt-2 mt-lg-0" role="group" aria-label="Basic example">
@@ -122,7 +122,7 @@
                 <div style="display: flex;justify-content: space-between;   position: sticky; top: 0;
                 background: #f5f5f5;
                 z-index: 9;">
-                    <div class="tzc_count" style="justify-content: left;cursor: pointer;"
+                    <div class="tzc_count" style="justify-content: left;cursor: pointer;min-width: 80px;"
                         v-if="zxArr.length>0&&zxArr[0].key.length>0" @click="prevData">
                         <svg class="bi bi-arrow-90deg-left" width="1.5em" height="1.5em" viewBox="0 0 16 16"
                             fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -134,14 +134,13 @@
                     </div>
                     <div v-else></div>
                     <div class="tzc_count">
-                        <div>
-
+                        <div style="text-align: right;">
                             <span class="badge badge-warning mr-2" v-for="item in zxArr">
                                 <span v-if="item.key" style="letter-spacing: 1px;">{{item.type}}:<span
                                         style="color:#b92a0a;">{{item.key}}</span></span>
                             </span>
                         </div>
-                        <span>数量：</span>
+                        <span style="min-width: 50px;">数量：</span>
                         <span class="tzc_digit">{{zxArr[zxArr.length-1].value.length}}</span>
                         <span>个</span>
                     </div>
@@ -213,6 +212,10 @@
             },
             //组选6
             zux6() {
+                if (this.selectDataKey.length <= 0) {
+                    alert('请至少选择一个数字')
+                    return false;
+                }
                 let keyword = this.selectDataKey.join()
 
                 let len = this.zxArr.length
@@ -294,22 +297,36 @@
                 let tempArr = []
 
                 //直选
-                tempArr = preItemArr.map(item => {
+                 preItemArr.map(item => {
+                    let array = item.split('')
+                    tempArr.push(array[0]+array[1]+array[2])
+                    tempArr.push(array[0]+array[2]+array[1])
+                    tempArr.push(array[1]+array[0]+array[2])
+                    tempArr.push(array[1]+array[2]+array[0])
+                    tempArr.push(array[2]+array[0]+array[1])
+                    tempArr.push(array[2]+array[1]+array[0])
+                }).filter(item => item !== undefined);
+
+                //检查是否全部包含
+                tempArr= tempArr.map(item => {
                     if (this.selectDataB.includes(item[0]) && this.selectDataS.includes(item[1]) && this.selectDataG.includes(item[2])) {
                         return item;
                     }
                 }).filter(item => item !== undefined);
 
-
+                let resultArr=new Set(tempArr)
                 itemJson.key = `百：(${this.selectDataB.join(',')})( 十：${this.selectDataS.join(',')})( 个：${this.selectDataG.join(',')})`;
                 itemJson.type = '直选'
-                itemJson.value = tempArr;
+                itemJson.value =  Array.from(resultArr);
                 this.zxArr.push(itemJson)
             },
 
             //组选3
             zux3() {
-
+                if (this.selectDataKey.length <= 0) {
+                    alert('请至少选择一个数字')
+                    return false;
+                }
                 let keyword = this.selectDataKey.join()
 
                 let len = this.zxArr.length
